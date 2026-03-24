@@ -1,310 +1,673 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Love Language Quiz - Valentine's Edition</title>
-    <style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Love Language Quiz — Discover Your Love Style</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #ff6b9d 0%, #c44569 50%, #f0932b 100%);
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            color: #2c1810;  /* Dark brown for contrast on pink */
-            overflow-x: hidden;
-            position: relative;
-        }
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: 
-                radial-gradient(circle at 20% 80%, rgba(255,255,255,0.3) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255,255,255,0.2) 0%, transparent 50%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50 30 Q60 10 70 30 T90 30 Q80 50 70 30 Q60 50 50 30 Q40 50 30 30 Q20 50 10 30 T30 30 Z" fill="%23ff69b4" opacity="0.4"><animate attributeName="opacity" values="0.4;0.8;0.4" dur="3s" repeatCount="indefinite"/></path></svg>') repeat;
-            background-size: 100px 100px;
-            z-index: -1;
-            animation: heartFloat 20s linear infinite;
-        }
-        @keyframes heartFloat {
-            0% { background-position: 0 0; }
-            100% { background-position: 100px 100px; }
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: rgba(255, 248, 220, 0.95);  /* Light cream glassmorphism */
-            backdrop-filter: blur(15px);
-            border-radius: 25px;
-            padding: 40px;
-            box-shadow: 0 25px 50px rgba(196, 69, 105, 0.4);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: #4a1f2e;  /* Deep pink-brown */
-        }
-        h1 {
-            text-align: center;
-            font-size: 2.8em;
-            margin-bottom: 10px;
-            background: linear-gradient(45deg, #ff6b9d, #c44569);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: none;
-            font-weight: bold;
-        }
-        .subtitle {
-            text-align: center;
-            font-size: 1.3em;
-            margin-bottom: 30px;
-            color: #6b2737;
-            font-style: italic;
-        }
-        .question {
-            background: linear-gradient(135deg, rgba(255,107,157,0.2), rgba(255,182,193,0.3));
-            padding: 25px;
-            margin-bottom: 25px;
-            border-radius: 20px;
-            font-size: 1.2em;
-            color: #2d1b24;
-            border-left: 5px solid #ff6b9d;
-        }
-        .options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 15px;
-            margin-top: 25px;
-        }
-        .option {
-            background: rgba(255,255,255,0.8);
-            border: 2px solid #ffb6c1;
-            padding: 20px;
-            border-radius: 15px;
-            cursor: pointer;
-            transition: all 0.4s ease;
-            text-align: center;
-            color: #4a1f2e;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        .option:hover {
-            background: #fff;
-            border-color: #ff6b9d;
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 15px 30px rgba(255,107,157,0.4);
-        }
-        .option.selected {
-            border-color: #c44569;
-            background: linear-gradient(135deg, #ff6b9d, #ffb6c1);
-            color: white;
-            box-shadow: 0 20px 40px rgba(255,107,157,0.5);
-        }
-        button {
-            background: linear-gradient(135deg, #ff6b9d, #c44569);
-            color: white;
-            border: none;
-            padding: 18px 40px;
-            font-size: 1.2em;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: all 0.3s;
-            display: block;
-            margin: 25px auto;
-            font-weight: bold;
-            box-shadow: 0 10px 25px rgba(255,107,157,0.4);
-        }
-        button:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 15px 35px rgba(255,107,157,0.6);
-        }
-        #results {
-            display: none;
-            text-align: center;
-        }
-        .result-bar {
-            background: rgba(255,182,193,0.6);
-            height: 50px;
-            margin: 15px 0;
-            border-radius: 25px;
-            overflow: hidden;
-            position: relative;
-            box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #ff4757, #ff6b9d, #ffa726);
-            transition: width 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            border-radius: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-        .bar-fill::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            animation: shine 2s infinite;
-        }
-        @keyframes shine {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-        .language-name {
-            margin-top: 12px;
-            font-size: 1.4em;
-            font-weight: bold;
-            color: #4a1f2e;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
-        }
-        .progress {
-            text-align: center;
-            margin: 25px 0;
-            font-size: 1.3em;
-            color: #6b2737;
-            font-weight: bold;
-            background: rgba(255,255,255,0.5);
-            padding: 10px 20px;
-            border-radius: 30px;
-            display: inline-block;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
-        }
-        .container {
-            animation: float 8s ease-in-out infinite;
-        }
-        footer {
-            text-align: center;
-            margin-top: 50px;
-            color: #6b2737;
-            font-size: 0.9em;
-        }
+    :root {
+      --pink:    #ff6b9d;
+      --rose:    #c44569;
+      --cream:   #fff8f0;
+      --deep:    #4a1f2e;
+      --mid:     #6b2737;
+      --gold:    #f0b429;
+      --gold-lt: #fef3c7;
+      --radius:  20px;
+    }
 
-    </style>
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #ff6b9d 0%, #c44569 55%, #f0932b 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      color: var(--deep);
+    }
+
+    /* ── Floating hearts bg ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Ctext y='45' font-size='30' opacity='.12'%3E💕%3C/text%3E%3C/svg%3E");
+      background-size: 90px 90px;
+      animation: drift 25s linear infinite;
+      pointer-events: none;
+    }
+    @keyframes drift { to { background-position: 90px 90px; } }
+
+    /* ── Card ── */
+    .card {
+      position: relative; z-index: 1;
+      width: 100%; max-width: 640px;
+      background: rgba(255,248,240,.97);
+      border-radius: 28px;
+      padding: 40px 36px;
+      box-shadow: 0 30px 60px rgba(196,69,105,.35);
+      animation: rise .5s ease;
+    }
+    @keyframes rise { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
+
+    /* ── Screen visibility ── */
+    .screen { display: none; }
+    .screen.active { display: block; }
+
+    /* ── Typography ── */
+    h1 { font-size: 2rem; font-weight: 800; line-height: 1.2;
+         background: linear-gradient(45deg, var(--pink), var(--rose));
+         -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    h2 { font-size: 1.4rem; font-weight: 700; color: var(--deep); }
+    h3 { font-size: 1.1rem; font-weight: 700; color: var(--deep); margin-bottom: 8px; }
+    p  { line-height: 1.65; color: var(--mid); }
+    .subtitle { font-size: 1rem; color: var(--mid); margin-top: 6px; }
+
+    /* ── Buttons ── */
+    .btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 16px 32px; border: none; border-radius: 50px; font-size: 1rem;
+      font-weight: 700; cursor: pointer; transition: all .25s; text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--pink), var(--rose));
+      color: #fff; box-shadow: 0 8px 20px rgba(255,107,157,.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(255,107,157,.55); }
+    .btn-primary:active { transform: translateY(0); }
+    .btn-primary:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .btn-gold {
+      background: linear-gradient(135deg, #f0b429, #d97706);
+      color: #fff; box-shadow: 0 8px 20px rgba(240,180,41,.4);
+    }
+    .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(240,180,41,.55); }
+    .btn-gold:active { transform: translateY(0); }
+    .btn-gold:disabled { opacity: .55; cursor: not-allowed; transform: none; }
+
+    .btn-outline {
+      background: transparent; color: var(--rose);
+      border: 2px solid var(--pink);
+    }
+    .btn-outline:hover { background: rgba(255,107,157,.08); }
+
+    .btn-full { width: 100%; }
+
+    /* ── Loading screen ── */
+    #screen-loading { text-align: center; padding: 20px 0; }
+    .heart-pulse {
+      font-size: 3.5rem; display: inline-block;
+      animation: pulse 1.2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.18); }
+    }
+    #screen-loading h2 { margin: 20px 0 8px; }
+    .dots span {
+      display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+      background: var(--pink); margin: 0 3px;
+      animation: bounce 1.2s ease-in-out infinite;
+    }
+    .dots span:nth-child(2) { animation-delay: .2s; }
+    .dots span:nth-child(3) { animation-delay: .4s; }
+    @keyframes bounce { 0%,80%,100%{transform:scale(.7)} 40%{transform:scale(1)} }
+
+    /* ── Quiz screen ── */
+    .progress-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    }
+    .progress-label { font-size: .85rem; font-weight: 600; color: var(--mid); white-space: nowrap; }
+    .progress-track {
+      flex: 1; height: 8px; background: rgba(255,107,157,.15); border-radius: 4px; overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--pink), var(--rose));
+      border-radius: 4px; transition: width .4s ease;
+    }
+
+    .question-text {
+      font-size: 1.15rem; font-weight: 600; color: var(--deep);
+      padding: 20px; background: rgba(255,107,157,.08);
+      border-left: 4px solid var(--pink); border-radius: 12px;
+      margin-bottom: 22px; line-height: 1.5;
+    }
+
+    .options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .option {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 14px 18px; border: 2px solid rgba(255,107,157,.25);
+      border-radius: 14px; cursor: pointer; transition: all .2s;
+      background: rgba(255,255,255,.7);
+    }
+    .option:hover { border-color: var(--pink); background: #fff; transform: translateX(4px); }
+    .option.selected {
+      border-color: var(--rose);
+      background: linear-gradient(135deg, rgba(255,107,157,.12), rgba(255,182,193,.2));
+    }
+    .option-badge {
+      flex-shrink: 0; width: 30px; height: 30px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: .8rem; font-weight: 700;
+      background: rgba(255,107,157,.15); color: var(--rose);
+      transition: all .2s;
+    }
+    .option.selected .option-badge { background: var(--rose); color: #fff; }
+    .option-text { font-size: .95rem; color: var(--deep); line-height: 1.45; padding-top: 3px; }
+
+    /* ── Paywall screen ── */
+    #screen-paywall { text-align: center; }
+    #screen-paywall h2 { font-size: 1.6rem; margin: 12px 0 4px; }
+
+    .locked-bars { margin: 24px 0; }
+    .locked-row {
+      display: flex; align-items: center; gap: 12px; margin-bottom: 12px;
+    }
+    .locked-label { width: 46px; font-size: 1.3rem; text-align: center; }
+    .locked-track { flex: 1; height: 22px; background: rgba(255,107,157,.12); border-radius: 11px; overflow: hidden; }
+    .locked-fill {
+      height: 100%; border-radius: 11px;
+      background: linear-gradient(90deg, rgba(255,107,157,.35), rgba(196,69,105,.35));
+      filter: blur(3px);
+    }
+
+    .perks { text-align: left; margin: 22px 0; list-style: none; }
+    .perks li { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0;
+                 font-size: .95rem; color: var(--mid); }
+    .perks li::before { content: '✓'; color: var(--rose); font-weight: 800; flex-shrink: 0; margin-top: 1px; }
+
+    .secure-note { font-size: .8rem; color: #999; margin-top: 10px; }
+
+    /* ── Generating screen ── */
+    #screen-generating { text-align: center; padding: 20px 0; }
+    #screen-generating h2 { margin: 20px 0 8px; }
+
+    /* ── Results screen ── */
+    #screen-results .headline {
+      font-size: 1.2rem; font-weight: 700; text-align: center;
+      color: var(--deep); padding: 14px 20px;
+      background: var(--gold-lt); border-radius: 14px; border-left: 4px solid var(--gold);
+      margin-bottom: 28px; line-height: 1.4;
+    }
+
+    /* Score bars */
+    .score-bars { margin-bottom: 30px; }
+    .score-row { margin-bottom: 12px; }
+    .score-meta {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 5px;
+    }
+    .score-name { font-size: .9rem; font-weight: 600; color: var(--deep); }
+    .score-pts  { font-size: .8rem; color: var(--mid); }
+    .score-track { height: 18px; background: rgba(255,107,157,.12); border-radius: 9px; overflow: hidden; }
+    .score-fill {
+      height: 100%; border-radius: 9px;
+      background: linear-gradient(90deg, var(--pink), var(--rose));
+      transition: width 1.2s cubic-bezier(.25,.46,.45,.94);
+      position: relative; overflow: hidden;
+    }
+    .score-fill::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,.3), transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer { from{transform:translateX(-100%)} to{transform:translateX(100%)} }
+    .score-row.primary .score-fill { background: linear-gradient(90deg, var(--gold), #d97706); }
+    .score-row.primary .score-name { color: var(--rose); font-size: 1rem; }
+
+    /* Analysis sections */
+    .analysis-section {
+      background: rgba(255,107,157,.06); border-radius: var(--radius);
+      padding: 20px 22px; margin-bottom: 18px;
+    }
+    .analysis-section h3 { display: flex; align-items: center; gap: 8px; }
+    .analysis-section p { margin-top: 8px; font-size: .95rem; }
+
+    .tips-list { margin-top: 10px; padding-left: 0; list-style: none; }
+    .tips-list li {
+      display: flex; gap: 10px; padding: 8px 0;
+      border-bottom: 1px solid rgba(255,107,157,.1); font-size: .93rem; color: var(--mid);
+    }
+    .tips-list li:last-child { border-bottom: none; }
+    .tips-list li::before { content: '→'; color: var(--pink); font-weight: 700; flex-shrink: 0; }
+
+    .growth-box {
+      background: var(--gold-lt); border-left: 4px solid var(--gold);
+      border-radius: var(--radius); padding: 18px 20px; margin-bottom: 24px;
+    }
+    .growth-box h3 { color: #92400e; }
+    .growth-box p  { color: #78350f; font-size: .95rem; margin-top: 6px; }
+
+    .result-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .result-actions .btn { flex: 1; min-width: 140px; }
+
+    /* ── Error banner ── */
+    .error-banner {
+      background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5;
+      border-radius: 10px; padding: 12px 16px; font-size: .9rem;
+      margin-bottom: 16px; display: none;
+    }
+    .error-banner.visible { display: block; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: rgba(255,107,157,.15); margin: 22px 0; }
+
+    @media (max-width: 480px) {
+      .card { padding: 28px 20px; }
+      h1 { font-size: 1.6rem; }
+      .result-actions { flex-direction: column; }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>💕 Love Language Quiz 💕</h1>
-        <p class="subtitle">Valentine's Day Special - Discover how you give & receive love</p>
+<div class="card">
 
-        <div id="quiz">
-            <div class="progress" id="progress">Question <span id="current-q">1</span> of 30</div>
-            <div class="question" id="question-text"></div>
-            <div class="options" id="options"></div>
-            <button id="next-btn" style="display:none;">Next →</button>
-        </div>
+  <!-- ════════════════════════════════
+       SCREEN 1 — LOADING
+  ════════════════════════════════ -->
+  <div id="screen-loading" class="screen active">
+    <div style="text-align:center; padding:20px 0">
+      <div class="heart-pulse">💕</div>
+      <h2>Preparing your quiz…</h2>
+      <p class="subtitle">Claude AI is crafting personalised questions for you</p>
+      <div class="dots" style="margin-top:20px">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
 
-        <div id="results">
-            <h2>Your Love Languages</h2>
-            <div id="result-bars"></div>
-            <div id="primary-language"></div>
-            <p>Share your results with your partner! 💑</p>
-            <button onclick="location.reload()">Take Quiz Again</button>
-        </div>
+  <!-- ════════════════════════════════
+       SCREEN 2 — QUIZ
+  ════════════════════════════════ -->
+  <div id="screen-quiz" class="screen">
+    <div style="text-align:center; margin-bottom:16px">
+      <h1>💕 Love Language Quiz</h1>
+      <p class="subtitle">Discover how you give &amp; receive love</p>
     </div>
 
-    <script>
-        const questions = [{'a': 'I like to receive notes of affirmation.', 'b': 'I like hugs.', 'c': 'I like surprise gifts.', 'd': 'I like help with chores.', 'e': 'I like long conversations.'}, {'a': 'I enjoy verbal compliments.', 'b': 'I enjoy quality time together.', 'c': 'I enjoy thoughtful presents.', 'd': 'I enjoy when you do things for me.', 'e': 'I enjoy physical affection.'}, {'a': 'I feel loved when you enthusiastically do a task I have requested.', 'b': 'I feel loved when we are doing a task together.', 'c': 'I feel loved when you give me a gift.', 'd': 'I feel loved when you do things to help me.', 'e': 'I feel loved when you hug or touch me.'}];
+    <div class="progress-row">
+      <span class="progress-label" id="q-counter">1 / 10</span>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill" style="width:10%"></div>
+      </div>
+    </div>
 
-        const languages = {
-            0: 'Words of Affirmation 💬',
-            1: 'Quality Time ⏰',
-            2: 'Receiving Gifts 🎁',
-            3: 'Acts of Service 🤲',
-            4: 'Physical Touch ❤️'
-        };
+    <div class="question-text" id="question-text"></div>
+    <div class="options" id="options"></div>
+    <div class="error-banner" id="quiz-error"></div>
 
-        let currentQuestion = 0;
-        let scores = [0, 0, 0, 0, 0];
-        let answers = [];
+    <button class="btn btn-primary btn-full" id="next-btn" style="display:none" onclick="nextQuestion()">
+      Next →
+    </button>
+  </div>
 
-        const quizEl = document.getElementById('quiz');
-        const resultsEl = document.getElementById('results');
-        const questionText = document.getElementById('question-text');
-        const optionsEl = document.getElementById('options');
-        const nextBtn = document.getElementById('next-btn');
-        const progress = document.getElementById('current-q');
+  <!-- ════════════════════════════════
+       SCREEN 3 — PAYWALL
+  ════════════════════════════════ -->
+  <div id="screen-paywall" class="screen">
+    <div style="text-align:center">
+      <div style="font-size:2.8rem">🔮</div>
+      <h2>Your results are ready!</h2>
+      <p class="subtitle">Unlock your personalised love language report</p>
+    </div>
 
-        function showQuestion() {
-            const q = questions[currentQuestion];
-            questionText.innerHTML = `Choose one:<br><small>${currentQuestion + 1}/30</small>`;
-            optionsEl.innerHTML = '';
+    <!-- Blurred preview bars -->
+    <div class="locked-bars" id="locked-preview"></div>
 
-            const optionLetters = ['A', 'B', 'C', 'D', 'E'];
-            for(let i = 0; i < 5; i++) {
-                const option = document.createElement('div');
-                option.className = 'option';
-                option.innerHTML = `<strong>${optionLetters[i]}</strong><br>${q[i]}`;
-                option.onclick = () => selectOption(i);
-                optionsEl.appendChild(option);
-            }
+    <div style="background:rgba(255,107,157,.06); border-radius:16px; padding:18px 20px">
+      <h3 style="margin-bottom:4px">What you'll get</h3>
+      <ul class="perks">
+        <li>Your full love language breakdown &amp; what it means for you</li>
+        <li>Personalised analysis written by Claude AI just for you</li>
+        <li>3 specific ways your partner can make you feel truly loved</li>
+        <li>How you express love — and how to do it even better</li>
+        <li>A growth insight based on your unique score pattern</li>
+      </ul>
+    </div>
 
-            progress.textContent = currentQuestion + 1;
-            nextBtn.style.display = 'none';
-        }
+    <div style="margin-top:22px">
+      <div class="error-banner" id="paywall-error"></div>
+      <button class="btn btn-gold btn-full" id="pay-btn" onclick="startCheckout()">
+        💳 Unlock My Results — $4.99
+      </button>
+      <p class="secure-note" style="text-align:center; margin-top:10px">
+        🔒 Secure payment via Stripe · One-time fee · Instant delivery
+      </p>
+    </div>
+  </div>
 
-        function selectOption(index) {
-            document.querySelectorAll('.option').forEach((opt, i) => {
-                opt.classList.toggle('selected', i === index);
-            });
-            answers[currentQuestion] = index;
-            nextBtn.style.display = 'block';
-        }
+  <!-- ════════════════════════════════
+       SCREEN 4 — GENERATING
+  ════════════════════════════════ -->
+  <div id="screen-generating" class="screen">
+    <div style="text-align:center; padding:20px 0">
+      <div class="heart-pulse">✨</div>
+      <h2>Analysing your love language…</h2>
+      <p class="subtitle">Claude AI is writing your personalised report</p>
+      <div class="dots" style="margin-top:20px">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
 
-        function nextQuestion() {
-            scores[answers[currentQuestion]]++;
-            currentQuestion++;
+  <!-- ════════════════════════════════
+       SCREEN 5 — RESULTS
+  ════════════════════════════════ -->
+  <div id="screen-results" class="screen">
+    <div style="text-align:center; margin-bottom:22px">
+      <h1>💕 Your Love Language Profile</h1>
+    </div>
 
-            if (currentQuestion < questions.length) {
-                showQuestion();
-            } else {
-                showResults();
-            }
-        }
+    <div class="headline" id="result-headline"></div>
 
-        function showResults() {
-            quizEl.style.display = 'none';
-            resultsEl.style.display = 'block';
+    <div class="score-bars" id="result-bars"></div>
+    <div class="divider"></div>
 
-            const resultBars = document.getElementById('result-bars');
-            resultBars.innerHTML = '';
+    <div class="analysis-section" id="primary-section"></div>
+    <div class="analysis-section" id="secondary-section"></div>
 
-            let maxScore = Math.max(...scores);
-            let primaryIndex = scores.indexOf(maxScore);
+    <div class="analysis-section" id="receiving-section"></div>
+    <div class="analysis-section" id="giving-section"></div>
 
-            scores.forEach((score, index) => {
-                const barContainer = document.createElement('div');
-                barContainer.className = 'result-bar';
+    <div class="growth-box" id="growth-box"></div>
 
-                const barFill = document.createElement('div');
-                barFill.className = 'bar-fill';
-                barFill.style.width = (score / 30 * 100) + '%';
+    <div class="result-actions">
+      <button class="btn btn-outline" onclick="retake()">↩ Retake Quiz</button>
+      <button class="btn btn-primary" onclick="shareResults()">Share Results 💕</button>
+    </div>
+  </div>
 
-                const nameEl = document.createElement('div');
-                nameEl.className = 'language-name';
-                nameEl.textContent = languages[index] + ` (${score}/30)`;
+</div><!-- /card -->
 
-                barContainer.appendChild(barFill);
-                resultBars.appendChild(barContainer);
-                resultBars.appendChild(nameEl);
-            });
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+let questions  = [];
+let currentQ   = 0;
+let selected   = null;       // index of selected option in current question
+let scores     = [0,0,0,0,0]; // [words, time, gifts, service, touch]
 
-            document.getElementById('primary-language').innerHTML = 
-                `<h3>🎉 Your Primary Love Language: ${languages[primaryIndex]} 🎉</h3>
-                 <p>Share this with your loved one to speak their love language!</p>`;
-        }
+const LANG_EMOJIS = ['💬','⏰','🎁','🤲','❤️'];
+const LANG_NAMES  = ['Words of Affirmation','Quality Time','Receiving Gifts','Acts of Service','Physical Touch'];
 
-        nextBtn.onclick = nextQuestion;
-        showQuestion();
-    </script>
+// ── Helpers ────────────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function showError(id, msg) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = msg; el.classList.add('visible'); }
+}
+function clearError(id) {
+  const el = document.getElementById(id);
+  if (el) { el.textContent = ''; el.classList.remove('visible'); }
+}
+
+// ── Boot ───────────────────────────────────────────────────────────────────
+(async function init() {
+  // If returning from Stripe with a session_id, skip quiz → generate results
+  const params    = new URLSearchParams(window.location.search);
+  const sessionId = params.get('session_id');
+
+  if (sessionId) {
+    // Clean the URL so a refresh doesn't re-trigger
+    window.history.replaceState({}, '', window.location.pathname);
+    show('screen-generating');
+    await generateResults(sessionId);
+    return;
+  }
+
+  // Otherwise load questions and start quiz
+  await loadQuestions();
+})();
+
+// ── Load AI questions ──────────────────────────────────────────────────────
+async function loadQuestions() {
+  show('screen-loading');
+  try {
+    const res  = await fetch('/api/questions');
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to load questions');
+    questions = data;
+    show('screen-quiz');
+    renderQuestion();
+  } catch (err) {
+    // Fatal: show error in loading screen
+    document.getElementById('screen-loading').innerHTML = `
+      <div style="text-align:center; padding:20px 0">
+        <div style="font-size:2.5rem">😕</div>
+        <h2 style="margin:16px 0 8px">Couldn't load quiz</h2>
+        <p class="subtitle">${err.message}</p>
+        <button class="btn btn-primary" style="margin-top:24px" onclick="loadQuestions()">Try again</button>
+      </div>`;
+    show('screen-loading');
+  }
+}
+
+// ── Render current question ────────────────────────────────────────────────
+function renderQuestion() {
+  const q       = questions[currentQ];
+  const total   = questions.length;
+  const pct     = Math.round(((currentQ) / total) * 100);
+
+  document.getElementById('q-counter').textContent = `${currentQ + 1} / ${total}`;
+  document.getElementById('progress-fill').style.width = `${Math.max(pct, 8)}%`;
+  document.getElementById('question-text').textContent = q.question;
+
+  const optionsEl = document.getElementById('options');
+  optionsEl.innerHTML = '';
+  selected = null;
+  document.getElementById('next-btn').style.display = 'none';
+  clearError('quiz-error');
+
+  ['A','B','C','D','E'].forEach((letter, i) => {
+    const key  = ['a','b','c','d','e'][i];
+    const div  = document.createElement('div');
+    div.className = 'option';
+    div.dataset.index = i;
+    div.innerHTML = `
+      <div class="option-badge">${letter}</div>
+      <div class="option-text">${q[key]}</div>`;
+    div.addEventListener('click', () => selectOption(div, i));
+    optionsEl.appendChild(div);
+  });
+}
+
+// ── Select an option ───────────────────────────────────────────────────────
+function selectOption(el, index) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selected = index;
+  document.getElementById('next-btn').style.display = 'flex';
+}
+
+// ── Advance question ───────────────────────────────────────────────────────
+function nextQuestion() {
+  if (selected === null) return;
+
+  scores[selected]++;   // index 0-4 maps to each love language
+  currentQ++;
+
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showPaywall();
+  }
+}
+
+// ── Show paywall with blurred preview ─────────────────────────────────────
+function showPaywall() {
+  // Render blurred score bars as a teaser
+  const preview = document.getElementById('locked-preview');
+  preview.innerHTML = '';
+  const sorted = scores
+    .map((s, i) => ({ emoji: LANG_EMOJIS[i], score: s }))
+    .sort((a, b) => b.score - a.score);
+
+  const max = Math.max(...scores, 1);
+  sorted.forEach(({ emoji, score }) => {
+    const pct = Math.round((score / max) * 90) + 10;
+    preview.innerHTML += `
+      <div class="locked-row">
+        <div class="locked-label">${emoji}</div>
+        <div class="locked-track">
+          <div class="locked-fill" style="width:${pct}%"></div>
+        </div>
+      </div>`;
+  });
+
+  show('screen-paywall');
+}
+
+// ── Create Stripe Checkout ─────────────────────────────────────────────────
+async function startCheckout() {
+  const btn = document.getElementById('pay-btn');
+  btn.disabled = true;
+  btn.textContent = 'Redirecting to payment…';
+  clearError('paywall-error');
+
+  try {
+    const res  = await fetch('/api/checkout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ scores }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Payment setup failed');
+    window.location.href = data.url;
+  } catch (err) {
+    showError('paywall-error', err.message);
+    btn.disabled = false;
+    btn.innerHTML = '💳 Unlock My Results — $4.99';
+  }
+}
+
+// ── Generate results after successful payment ──────────────────────────────
+async function generateResults(sessionId) {
+  show('screen-generating');
+  try {
+    const res  = await fetch('/api/results', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ sessionId }),
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Failed to generate results');
+    renderResults(data);
+  } catch (err) {
+    // Show error in generating screen
+    document.getElementById('screen-generating').innerHTML = `
+      <div style="text-align:center; padding:20px 0">
+        <div style="font-size:2.5rem">😕</div>
+        <h2 style="margin:16px 0 8px">Something went wrong</h2>
+        <p class="subtitle">${err.message}</p>
+        <p style="margin-top:8px; font-size:.85rem; color:#999">
+          Your payment was received. Please reload to try again.
+        </p>
+        <button class="btn btn-primary" style="margin-top:24px" onclick="location.reload()">Reload</button>
+      </div>`;
+    show('screen-generating');
+  }
+}
+
+// ── Render results ─────────────────────────────────────────────────────────
+function renderResults({ analysis, languages, total }) {
+  // Headline
+  document.getElementById('result-headline').textContent = `"${analysis.headline}"`;
+
+  // Score bars
+  const barsEl = document.getElementById('result-bars');
+  barsEl.innerHTML = '';
+  languages.forEach((lang, i) => {
+    const pct = total > 0 ? Math.round((lang.score / total) * 100) : 0;
+    const isPrimary = i === 0;
+    barsEl.innerHTML += `
+      <div class="score-row ${isPrimary ? 'primary' : ''}">
+        <div class="score-meta">
+          <span class="score-name">${lang.emoji} ${lang.name}${isPrimary ? ' ★' : ''}</span>
+          <span class="score-pts">${lang.score} / ${total} pts</span>
+        </div>
+        <div class="score-track">
+          <div class="score-fill" style="width:0%" data-width="${pct}%"></div>
+        </div>
+      </div>`;
+  });
+
+  // Animate bars after paint
+  requestAnimationFrame(() => {
+    setTimeout(() => {
+      document.querySelectorAll('.score-fill').forEach(el => {
+        el.style.width = el.dataset.width;
+      });
+    }, 80);
+  });
+
+  const primary   = languages[0];
+  const secondary = languages[1];
+
+  // Primary analysis
+  document.getElementById('primary-section').innerHTML = `
+    <h3>${primary.emoji} Your Primary Love Language</h3>
+    <div style="font-size:.8rem; color:var(--mid); margin-bottom:10px">
+      ${primary.name} · ${primary.score} pts
+    </div>
+    <p>${analysis.primary_analysis}</p>`;
+
+  // Secondary analysis
+  document.getElementById('secondary-section').innerHTML = `
+    <h3>${secondary.emoji} Your Secondary Language</h3>
+    <div style="font-size:.8rem; color:var(--mid); margin-bottom:10px">
+      ${secondary.name} · ${secondary.score} pts
+    </div>
+    <p>${analysis.secondary_analysis}</p>`;
+
+  // Receiving tips
+  const receivingTips = analysis.receiving_tips.map(t => `<li>${t}</li>`).join('');
+  document.getElementById('receiving-section').innerHTML = `
+    <h3>💝 How Your Partner Can Love You</h3>
+    <ul class="tips-list">${receivingTips}</ul>`;
+
+  // Giving tips
+  const givingTips = analysis.giving_tips.map(t => `<li>${t}</li>`).join('');
+  document.getElementById('giving-section').innerHTML = `
+    <h3>🫶 How You Express Love</h3>
+    <ul class="tips-list">${givingTips}</ul>`;
+
+  // Growth insight
+  document.getElementById('growth-box').innerHTML = `
+    <h3>🌱 Growth Insight</h3>
+    <p>${analysis.growth_insight}</p>`;
+
+  show('screen-results');
+
+  // Scroll to top of card
+  document.querySelector('.card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// ── Actions ────────────────────────────────────────────────────────────────
+function retake() {
+  questions  = [];
+  currentQ   = 0;
+  selected   = null;
+  scores     = [0,0,0,0,0];
+  loadQuestions();
+}
+
+function shareResults() {
+  const headline = document.getElementById('result-headline').textContent;
+  const text = `I just discovered my love language! ${headline} — Take the quiz at ${window.location.origin}`;
+  if (navigator.share) {
+    navigator.share({ title: 'My Love Language Results', text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(() => alert('Results copied to clipboard!'));
+  } else {
+    alert(text);
+  }
+}
+</script>
 </body>
 </html>
